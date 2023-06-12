@@ -1,0 +1,22 @@
+{
+  "name": "system-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-modules src/index.mjs",
+    "serve": "nodemon --experimental-modules src/index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "dotenv": "^10.0.0",
+    "farmhash": "^3.2.2",
+    "helmet": "^5.0.1",
+    "socket.io-client": "^4.4.1",
+    "systeminformation": "^5.9.17"
+  }
+}

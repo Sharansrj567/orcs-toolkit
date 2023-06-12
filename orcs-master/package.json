@@ -1,0 +1,40 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-modules src/index.mjs",
+    "serve": "nodemon --experimental-modules src/index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@socket.io/redis-adapter": "^7.1.0",
+    "@ssktickets/common": "^1.0.10",
+    "chalk": "^5.0.0",
+    "common": "link:@@ssktickets/common",
+    "connect-redis": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.14.0",
+    "farmhash": "^3.2.2",
+    "helmet": "^5.0.1",
+    "ioredis": "^4.28.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.5",
+    "mongoose-update-if-current": "^1.4.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.0",
+    "redis": "^4.0.1",
+    "session.socket.io-express4": "^0.1.1",
+    "socket.io": "^4.4.1"
+  }
+}
