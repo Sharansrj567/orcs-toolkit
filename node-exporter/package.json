@@ -1,0 +1,40 @@
+{
+  "name": "node-exporter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "type": "module",
+  "preferGlobal": true,
+  "bin": {
+    "orcs-node": "src/cli/commands.mjs"
+  },
+  "scripts": {
+    "start": "node --experimental-modules src/index.mjs",
+    "serve": "nodemon --experimental-modules src/index.mjs",
+    "serve:cloud": "cross-env CLOUD_NAME=VMUser CLOUD_ROLE=cloud node --experimental-modules src/index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "chalk": "^5.0.0",
+    "cli-spinner": "^0.2.10",
+    "commander": "^9.0.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.3",
+    "farmhash": "^3.2.2",
+    "find-process": "^1.4.7",
+    "helmet": "^5.0.1",
+    "morgan": "^1.10.0",
+    "nanospinner": "^1.0.0",
+    "node-notifier": "^10.0.1",
+    "node-windows": "1.0.0-beta.6",
+    "ps-node": "^0.1.6",
+    "socket.io-client": "^4.4.1",
+    "systeminformation": "^5.9.17",
+    "taskkill": "^4.0.0"
+  }
+}
