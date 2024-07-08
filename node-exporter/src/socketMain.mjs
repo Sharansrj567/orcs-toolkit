@@ -2,7 +2,7 @@ import os from 'os';
 import { performanceData } from './components/perfData.mjs';
 import { sysInfo } from './components/systemInfo.mjs';
 import { Logger } from './service/logger.mjs';
-import { loadPolicyByRole } from './service/orcs-monitor/orcs.mjs';
+import {loadPolicyByRole} from "./service/orcs-monitor/orcs.mjs";
 
 const logger = new Logger();
 
@@ -64,10 +64,10 @@ export function socketMain(socket) {
 		// console.log('From Admin', data);
 		// console.log(data.role);
 		// console.log(global.role);
-		console.log('Received a broadcast of role', global.role);
+		console.log('Received a broadcast', global.role)
 
 		if (global.role === data.role) {
-			console.log('Hello');
+			console.log("Hello");
 			loadPolicyByRole(global.role);
 			// {
 			// 	role: '' // default, student, faculty, admin,

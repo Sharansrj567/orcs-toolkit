@@ -1,0 +1,15 @@
+{
+    "name": "start-script",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "serve": "concurrently --kill-others --group --timings \"cd ../api-server && pnpm i && pnpm serve\" \"cd ../orcs-master && pnpm i && pnpm serve\" \"cd ../node-exporter && pnpm i && pnpm serve\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "concurrently": "^7.1.0"
+    }
+}

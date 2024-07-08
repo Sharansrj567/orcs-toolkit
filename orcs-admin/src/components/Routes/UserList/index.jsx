@@ -80,7 +80,7 @@ const UserList = () => {
                         <h5 className="text-primary">Email: {d.email || ""}</h5>
                       </ListGroupItem>
                       <ListGroupItem>
-                        <h5 className="text-primary">Policy: {d.role || ""}</h5>
+                        <h5 className="text-primary">Role: {d.role || ""}</h5>
                       </ListGroupItem>
                       <ListGroupItem>
                         <h5 className="text-primary">

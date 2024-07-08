@@ -144,7 +144,7 @@ const MachineDetails = ({ socket }) => {
               <StyledCard
                 title={"CPU Temperature"}
                 borderColor={"#224870"}
-                body={`${machineData.cpuTemp.main||34}°`}
+                body={machineData.cpuTemp.main + "°"}
               />
               <StyledCard
                 title={"Is Active"}

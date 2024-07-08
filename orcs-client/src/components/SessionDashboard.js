@@ -136,7 +136,7 @@ export default function SessionDashboard() {
 												<br />
 												Email: {user.email}
 												<br />
-												Policy: {user.role}
+												Role: {user.role}
 											</p>
 										</div>
 										<div style={{ marginTop: '10px' }} className="mb-4">

@@ -41,5 +41,5 @@ app.use(routes);
 
 const PORT = 4001;
 app.listen(process.env.PORT || PORT, () => {
-	logger.info(`Auth server is running on port: ${PORT}`);
+	logger.info(`Auth server running on port: ${PORT}`);
 });
