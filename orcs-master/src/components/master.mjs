@@ -4,8 +4,6 @@ import farmhash from 'farmhash';
 import os from 'os';
 import mongoose from 'mongoose';
 
-// cluster.schedulingPolicy = cluster.SCHED_RR
-
 import { Logger } from '../services/logger.mjs';
 import { winLogger } from '../services/winstonLogger.mjs';
 
@@ -14,14 +12,26 @@ const num_processes = process.env.THREADS || os.cpus().length;
 
 const logger = new Logger();
 
+// Choose forwarding strategy here:
+const ACTIVE_METHOD = 'L3_HASH'; // Options: L3_HASH, L4_HASH, ACL, NAT
+
+// ACL rules
+const ACL_TABLE = [
+	{ ip: '::1', port: 5000, action: 'block' }, // IPv6 loopback
+	{ ip: '127.0.0.1', port: 3000, action: 'allow' },
+];
+
+// NAT table
+const NAT_TABLE = {
+	'127.0.0.1:4000': '10.0.0.2:8080',
+};
+
 export async function isMaster() {
 	let workers = [];
 
-	// Helper function for spawning worker at index 'i'.
-	let spawn = (i) => {
+	const spawn = (i) => {
 		workers[i] = cluster.fork();
 
-		// Optional: Restart worker on exit
 		workers[i].on('exit', (code, signal) => {
 			logger.info('respawning worker', i);
 			spawn(i);
@@ -41,28 +51,66 @@ export async function isMaster() {
 		logger.error(e.message);
 	}
 
-	// Spwan workers
-	for (var i = 0; i < num_processes; i++) {
+	for (let i = 0; i < num_processes; i++) {
 		spawn(i);
 	}
 
-	const worker_index = (ip, len) => {
-		return farmhash.fingerprint32(ip) % len;
-	};
+	// Forwarding Logic
+	const getWorkerIndex = (key) => farmhash.fingerprint32(key) % num_processes;
 
 	const server = net.createServer({ pauseOnConnect: true }, (connection) => {
-		// We received a connection and need to pass it to the appropriate
-		// worker. Get the worker for this connection's source IP and pass
-		// it the connection.
-		let ip = connection.remoteAddress;
-		let port = connection.remotePort;
-		// Simulate L3/L4-based decision-making
-		let worker = workers[worker_index(ip + port, num_processes)];
-		// let worker = workers[worker_index(connection.remoteAddress, num_processes)];
-		worker.send('sticky-session:connection', connection);
+		const ip = connection.remoteAddress;
+		const port = connection.remotePort;
+		const key = `${ip}:${port}`;
+
+		switch (ACTIVE_METHOD) {
+			case 'L4_HASH': {
+				const worker = workers[getWorkerIndex(ip + port)];
+				logger.master(`L4_HASH forwarding to worker based on ${ip}:${port}`);
+				worker.send('sticky-session:connection', connection);
+				break;
+			}
+
+			case 'ACL': {
+				const rule = ACL_TABLE.find(
+					(r) => r.ip === ip && r.port === port
+				);
+
+				if (rule?.action === 'block') {
+					logger.master(`ACL blocked connection from ${ip}:${port}`);
+					connection.destroy();
+					return;
+				}
+
+				const worker = workers[getWorkerIndex(ip)];
+				logger.master(`ACL allowed ${ip}:${port} → worker`);
+				worker.send('sticky-session:connection', connection);
+				break;
+			}
+
+			case 'NAT': {
+				if (NAT_TABLE[key]) {
+					const [mappedIP, mappedPort] = NAT_TABLE[key].split(':');
+					logger.master(`NAT mapping ${key} → ${mappedIP}:${mappedPort}`);
+					// Simulate logic — for now, just log the NAT.
+				}
+
+				const worker = workers[getWorkerIndex(ip)];
+				logger.master(`NAT forwarding ${ip} to worker`);
+				worker.send('sticky-session:connection', connection);
+				break;
+			}
+
+			case 'L3_HASH':
+			default: {
+				const worker = workers[getWorkerIndex(ip)];
+				logger.master(`L3_HASH forwarding ${ip} to worker`);
+				worker.send('sticky-session:connection', connection);
+			}
+		}
 	});
 
 	server.listen(PORT, () => {
-		logger.master(`Master listenting on PORT: ${PORT}`);
+		logger.master(`Master listening on PORT: ${PORT}`);
 	});
 }
