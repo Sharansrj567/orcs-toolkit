@@ -176,6 +176,20 @@ To run the ORCS application, follow these step-by-step instructions. Ensure you 
 - Ensure that the dashboard loads and displays system information, CPU, and memory consumption, etc.
 - Check that you can navigate through the application's features without errors.
 
+## SmartNIC-Inspired Forwarding Strategies
+
+As part of the ongoing scalability and observability improvements to the master module, we added **Layer 3/4-style forwarding mechanisms** inspired by SmartNIC architecture:
+
+### Highlights:
+- **L3 Hashing**: Uses IP address hash to determine the worker.
+- **L4 Hashing**: Combines IP and Port for more even distribution across workers.
+- **ACL Filtering**: Adds rule-based connection denial based on source IP.
+- **Simulated NAT Mapping**: Redirects IP:PORT pairs using a NAT-like mapping table.
+- **Modular Design**: All strategies are encapsulated as switchable methods. `L3` is the default.
+
+This enables high-performance load distribution, and adds hooks for future packet inspection or programmable NIC offloading simulations.
+
+
 ### Troubleshooting
 
 - If you encounter any issues, check the console for errors, and ensure all services (MongoDB, Redis) are running.
